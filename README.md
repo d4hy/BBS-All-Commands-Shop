@@ -4,10 +4,10 @@ An OpenKH LuaBackend mod for the Steam release of **Kingdom Hearts Birth by Slee
 
 ## Features
 
-- Unlocks 90 legitimate purchasable command IDs.
+- Unlocks 108 legitimate purchasable deck and action command IDs.
 - Uses the game's original Terra, Ventus, and Aqua shop lists, so each character sees only commands from their own list.
 - Keeps commands marked hidden or internal by the game out of the shop.
-- Hides 18 movement, defense, and reprisal action IDs that display placeholder names, `XXX` descriptions, or invalid prices in the purchase interface.
+- Includes valid movement, defense, and reprisal commands with the game's original names and prices.
 - Does not edit the save file or game executable.
 - Contains no extracted game assets.
 
@@ -30,7 +30,7 @@ Restart the game after replacing an older copy of the mod so LuaBackend unloads 
 
 ## How it works
 
-The Lua script restores the game's original Command Shop filtering instructions, sets the shop requirement for valid command IDs to zero, and marks invalid action entries as hidden. Character filtering remains controlled by the game's original shop data.
+The Lua script restores the game's original Command Shop filtering instructions and sets the shop requirement for valid deck and action command IDs to zero. Character filtering remains controlled by the game's original shop data.
 
 ## Compatibility
 

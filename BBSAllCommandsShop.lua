@@ -1,6 +1,6 @@
 LUAGUI_NAME = "BBS All Commands Shop"
 LUAGUI_AUTH = "d4hy"
-LUAGUI_DESC = "Unlocks only legitimate purchasable commands while preserving the game's character-specific shop lists."
+LUAGUI_DESC = "Unlocks legitimate deck and action commands while preserving the game's character-specific shop lists."
 
 local IS_STEAM_GL_VERSION = 0x68D451
 local STEAM_SIGNATURE = 0x7265737563697065
@@ -31,11 +31,8 @@ local UNLOCK_COMMAND_IDS = {
 	0x00B3, 0x00B4, 0x00B5, 0x00B6, 0x00B7, 0x00B8, 0x00B9, 0x00BA,
 	0x00BB, 0x00BC, 0x00BD, 0x00BE, 0x00BF, 0x00C0, 0x00C1, 0x00C2,
 	0x00C3, 0x00C4,
-}
 
--- These are movement/defense/reprisal actions present in the raw lists.
--- The purchase UI has invalid names/prices for them, so keep them hidden.
-local BLOCKED_ACTION_IDS = {
+	-- Valid movement, defense, and reprisal commands from the original lists.
 	0x00F8, 0x00FA, 0x00FB, 0x00FD, 0x00FE, 0x00FF, 0x0102, 0x0109,
 	0x010C, 0x010E, 0x0111, 0x0113, 0x0114, 0x0115, 0x0116, 0x0117,
 	0x0118, 0x0119,
@@ -70,10 +67,6 @@ function _OnFrame()
 		WriteByte(COMMAND_SHOP_LEVEL_BASE + commandId * COMMAND_RECORD_SIZE, 0)
 	end
 
-	for _, commandId in ipairs(BLOCKED_ACTION_IDS) do
-		WriteByte(COMMAND_SHOP_LEVEL_BASE + commandId * COMMAND_RECORD_SIZE, 0xFF)
-	end
-
 	installed = true
-	ConsolePrint("BBS All Commands Shop: installed 90 valid commands; blocked 18 invalid actions")
+	ConsolePrint("BBS All Commands Shop: installed 108 valid deck and action commands")
 end

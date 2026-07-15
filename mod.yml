@@ -1,6 +1,6 @@
 title: "BBS All Commands Shop"
 author: "d4hy"
-description: "Unlocks legitimate purchasable commands in each character's original Command Shop list while hiding invalid action entries."
+description: "Unlocks legitimate deck, movement, defense, and reprisal commands in each character's original Command Shop list."
 assets:
 - name: scripts/BBSAllCommandsShop.lua
   method: copy
