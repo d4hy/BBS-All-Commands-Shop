@@ -1,0 +1,8 @@
+title: "BBS All Commands Shop"
+author: "d4hy"
+description: "Unlocks legitimate purchasable commands in each character's original Command Shop list while hiding invalid action entries."
+assets:
+- name: scripts/BBSAllCommandsShop.lua
+  method: copy
+  source:
+  - name: BBSAllCommandsShop.lua

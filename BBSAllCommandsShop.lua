@@ -1,0 +1,79 @@
+LUAGUI_NAME = "BBS All Commands Shop"
+LUAGUI_AUTH = "d4hy"
+LUAGUI_DESC = "Unlocks only legitimate purchasable commands while preserving the game's character-specific shop lists."
+
+local IS_STEAM_GL_VERSION = 0x68D451
+local STEAM_SIGNATURE = 0x7265737563697065
+local COMMAND_SHOP_LEVEL_BASE = 0x811082
+local COMMAND_RECORD_SIZE = 0x1E
+
+-- Restore the game's original shop gate in case an older build was loaded.
+local ORIGINAL_SHOP_GATES = {
+	0x4AA424,
+	0x4AA64A,
+	0x4AAA54,
+	0x4AAE84,
+	0x4AB5E4,
+}
+
+-- Valid shop commands found in the original Terra, Ventus, and Aqua lists.
+-- Entries the game marks 0xFF (hidden/internal) are intentionally omitted.
+local UNLOCK_COMMAND_IDS = {
+	0x005B, 0x005C, 0x005F, 0x0060, 0x0061, 0x0062, 0x0064, 0x0065,
+	0x0066, 0x0068, 0x0069, 0x006A, 0x006B, 0x006C, 0x006D, 0x0071,
+	0x0072, 0x0073, 0x0074, 0x0075, 0x0076, 0x0077, 0x0078, 0x007A,
+	0x007B, 0x007D, 0x007E, 0x007F, 0x0080, 0x0081, 0x0083, 0x0084,
+	0x0085, 0x0086, 0x0087, 0x0088, 0x0089, 0x008A, 0x008B, 0x008C,
+	0x008D, 0x008E, 0x008F, 0x0090, 0x0091, 0x0092, 0x0093, 0x0094,
+	0x0095, 0x0096, 0x0097, 0x0098, 0x0099, 0x009A, 0x009B, 0x009C,
+	0x009D, 0x009E, 0x009F, 0x00A0, 0x00A1, 0x00A2, 0x00A3, 0x00A4,
+	0x00A5, 0x00A7, 0x00A8, 0x00A9, 0x00AA, 0x00AD, 0x00B1, 0x00B2,
+	0x00B3, 0x00B4, 0x00B5, 0x00B6, 0x00B7, 0x00B8, 0x00B9, 0x00BA,
+	0x00BB, 0x00BC, 0x00BD, 0x00BE, 0x00BF, 0x00C0, 0x00C1, 0x00C2,
+	0x00C3, 0x00C4,
+}
+
+-- These are movement/defense/reprisal actions present in the raw lists.
+-- The purchase UI has invalid names/prices for them, so keep them hidden.
+local BLOCKED_ACTION_IDS = {
+	0x00F8, 0x00FA, 0x00FB, 0x00FD, 0x00FE, 0x00FF, 0x0102, 0x0109,
+	0x010C, 0x010E, 0x0111, 0x0113, 0x0114, 0x0115, 0x0116, 0x0117,
+	0x0118, 0x0119,
+}
+
+local installed = false
+local warnedUnsupported = false
+
+function _OnInit()
+	installed = false
+	warnedUnsupported = false
+end
+
+function _OnFrame()
+	if installed then
+		return
+	end
+
+	if ReadLong(IS_STEAM_GL_VERSION) ~= STEAM_SIGNATURE then
+		if not warnedUnsupported then
+			warnedUnsupported = true
+			ConsolePrint("BBS All Commands Shop: waiting for Steam GL version")
+		end
+		return
+	end
+
+	for _, address in ipairs(ORIGINAL_SHOP_GATES) do
+		WriteShort(address, 0xBE0F)
+	end
+
+	for _, commandId in ipairs(UNLOCK_COMMAND_IDS) do
+		WriteByte(COMMAND_SHOP_LEVEL_BASE + commandId * COMMAND_RECORD_SIZE, 0)
+	end
+
+	for _, commandId in ipairs(BLOCKED_ACTION_IDS) do
+		WriteByte(COMMAND_SHOP_LEVEL_BASE + commandId * COMMAND_RECORD_SIZE, 0xFF)
+	end
+
+	installed = true
+	ConsolePrint("BBS All Commands Shop: installed 90 valid commands; blocked 18 invalid actions")
+end
